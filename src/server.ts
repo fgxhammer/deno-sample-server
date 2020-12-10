@@ -1,19 +1,18 @@
-import { Application, Router, RouterContext } from 'https://deno.land/x/oak@v6.3.2/mod.ts'
+import { Application } from "../dependencies.ts";
+import router from "./router.ts";
 
-const app = new Application()
-const router = new Router()
+const app = new Application();
 
-const PORT = 1337
+const PORT = 1337;
 
-router.get('/', (ctx: RouterContext) => {
-  ctx.response.body = 'Hello 🌍 !'
-})
+app.use(router.routes());
+app.use(router.allowedMethods());
 
-app.use(router.routes())
-app.use(router.allowedMethods())
+app.addEventListener("listen", ({ hostname, port, secure }) => {
+  console.log(
+    `Listening on ${secure ? "https://" : "http://"}${hostname ||
+      "localhost"}:${port}...`,
+  );
+});
 
-app.addEventListener('listen', ({hostname, port, secure}) => {
-  console.log(`Listening on ${secure ? 'https://' : 'http://'}${hostname || 'localhost'}:${port}...`)
-})
-
-await app.listen({ port: PORT})
+await app.listen({ port: PORT });
